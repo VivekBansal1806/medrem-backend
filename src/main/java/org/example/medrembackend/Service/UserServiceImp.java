@@ -20,7 +20,7 @@ public class UserServiceImp implements UserService {
     private final PasswordEncoder pe;
 
     @Autowired
-    UserServiceImp(PasswordEncoder pe, UserRepo userRepo, PasswordEncoder passwordEncoder) {
+    UserServiceImp(PasswordEncoder pe, UserRepo userRepo) {
         this.pe = pe;
         this.userRepo = userRepo;
     }
