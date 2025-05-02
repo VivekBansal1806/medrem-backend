@@ -17,4 +17,5 @@ public class LoginResponse {
     private String role;
     private LocalDate createdAt;
     private LocalDate updatedAt;
+    private String token;
 }
