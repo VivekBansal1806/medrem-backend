@@ -1,28 +1,33 @@
 package org.example.medrembackend.Service;
 
+import java.time.LocalDate;
+import java.util.List;
+
 import org.example.medrembackend.DTOs.LoginRequest;
 import org.example.medrembackend.DTOs.LoginResponse;
 import org.example.medrembackend.DTOs.RegistrationRequest;
 import org.example.medrembackend.DTOs.RegistrationResponse;
 import org.example.medrembackend.Entity.UserEntity;
 import org.example.medrembackend.Repository.UserRepo;
+import org.example.medrembackend.Security.JwtHelper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.util.List;
-
 @Service
-public class UserServiceImp implements UserService {
+public class UserServiceImpl implements UserService {
 
     private final UserRepo userRepo;
     private final PasswordEncoder pe;
+    private final JwtHelper jwtHelper;
+
 
     @Autowired
-    UserServiceImp(PasswordEncoder pe, UserRepo userRepo) {
+    UserServiceImpl(PasswordEncoder pe, UserRepo userRepo, JwtHelper jwtHelper) {
         this.pe = pe;
         this.userRepo = userRepo;
+        this.jwtHelper = jwtHelper;
     }
 
     @Override
@@ -62,6 +67,12 @@ public class UserServiceImp implements UserService {
         if (!pe.matches(request.getPassword(), user.getPassword()))
             throw new RuntimeException("Wrong password");
 
+        String token = jwtHelper.generateToken(org.springframework.security.core.userdetails.User.builder()
+                .username(user.getUsername())
+                .password(user.getPassword())
+                .roles(user.getRole().name())
+                .build());
+
         return LoginResponse.builder()
                 .userId(user.getUserId())
                 .username(user.getUsername())
@@ -72,12 +83,25 @@ public class UserServiceImp implements UserService {
                 .role(user.getRole().name())
                 .createdAt(user.getCreatedAt())
                 .updatedAt(user.getUpdatedAt())
+                .token(token)
                 .build();
     }
 
     @Override
     public List<UserEntity> getUsers() {
         return userRepo.findAll();
+    }
+
+    // New method to get user from JWT token
+    public UserEntity getUserFromToken(String token) {
+        // Remove "Bearer " prefix if present
+        if (token.startsWith("Bearer ")) {
+            token = token.substring(7);
+        }
+
+        String username = jwtHelper.getUsernameFromToken(token);
+        return userRepo.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
     }
 
 }
