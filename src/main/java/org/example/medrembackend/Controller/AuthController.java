@@ -5,7 +5,6 @@ import org.example.medrembackend.DTOs.JwtResponse;
 import org.example.medrembackend.Security.JwtHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -23,14 +22,16 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/auth")
 public class AuthController {
 
-    @Autowired
-    private UserDetailsService userDetailsService;
-    @Autowired
-    private AuthenticationManager manager;
-    @Autowired
-    private JwtHelper helper;
-
+    private final UserDetailsService userDetailsService;
+    private final AuthenticationManager manager;
+    private final JwtHelper helper;
     private final Logger logger = LoggerFactory.getLogger(AuthController.class);
+
+    public AuthController(UserDetailsService userDetailsService, AuthenticationManager manager, JwtHelper helper) {
+        this.userDetailsService = userDetailsService;
+        this.manager = manager;
+        this.helper = helper;
+    }
 
     @PostMapping("/login")
     public ResponseEntity<JwtResponse> login(@RequestBody JwtRequest request) {
