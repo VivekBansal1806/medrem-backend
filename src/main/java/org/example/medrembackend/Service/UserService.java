@@ -12,6 +12,8 @@ public interface UserService {
     RegistrationResponse registerUser(RegistrationRequest registration);
     LoginResponse loginUser(LoginRequest request);
     List<UserEntity> getUsers();
+    public UserEntity getUserFromToken(String token);
 
 
-}
+
+    }

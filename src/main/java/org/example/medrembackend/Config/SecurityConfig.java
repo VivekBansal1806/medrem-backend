@@ -9,7 +9,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.AuthenticationFilter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
@@ -44,10 +43,10 @@ public class SecurityConfig {
         //configuration
         http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("api/users/register").permitAll()
-                        .requestMatchers("/api/users/**").authenticated()
-                        .requestMatchers("/auth/login").permitAll()
-                        .requestMatchers("/health-check").permitAll()
+//                        .requestMatchers("/api/users/register",
+//                                "/api/users/login",
+//                                "/health-check")
+//                        .permitAll()
                         .anyRequest().permitAll())
                 .exceptionHandling(ex -> ex.authenticationEntryPoint(point))
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
