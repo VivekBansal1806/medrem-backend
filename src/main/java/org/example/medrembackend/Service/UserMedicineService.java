@@ -6,7 +6,7 @@ import org.example.medrembackend.DTOs.UserMedicineResponse;
 import java.util.List;
 
 public interface UserMedicineService {
-    public UserMedicineResponse addUserMedicine(UserMedicineRequest request);
+    public UserMedicineResponse addUserMedicine(UserMedicineRequest request, Long userId, Long medicineId);
 
     public List<UserMedicineResponse> getUserMedicines(Long userId);
 

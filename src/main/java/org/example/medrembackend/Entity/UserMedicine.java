@@ -15,7 +15,7 @@ public class UserMedicine {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long userMedicineId;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -25,7 +25,19 @@ public class UserMedicine {
     @JoinColumn(name = "medicine_id")
     private Medicine medicine;
 
-    private Integer quantityPacks;  // e.g., 2 packs
+    // if medicine is not found in medicine
+    private String medicineName;
+    private String manufacturer;
+    private String composition1;
+    private String composition2;
+    private String price;
+    private String type;
+
     private Integer pillsPerPack;   // e.g., 15 pills per pack
+
+    @Lob
+    private String about;
+
+    private Integer quantityPacks;  // e.g., 2 packs
     private LocalDate addedDate;
 }

@@ -13,16 +13,17 @@ public class Medicine {
     private Long medicineId; // Medicine ID
 
     @Column(nullable = false)
-    private String name; // Name of the medicine
+    private String medicineName; // Name of the medicine
 
     @Column(name = "pack_size", nullable = false)
-    private Integer packSize; // Pack size (e.g., number of pills in a pack)
+    private Integer pillsPerPack; // Pack size (e.g., number of pills in a pack)
 
-    private Double price; // Price of the medicine
+    private String price; // Price of the medicine
 
     private String manufacturer; // Manufacturer of the medicine
 
-    private String type; // Type of the medicine (e.g., Tablet, Syrup)
+    @Enumerated(EnumType.STRING)
+    private MedicineType medicineType; // Type of the medicine (e.g., Tablet, Syrup)
 
     @Column(name = "composition_1")
     private String composition1; // Composition 1 (Active ingredient)
@@ -30,5 +31,18 @@ public class Medicine {
     @Column(name = "composition_2")
     private String composition2; // Composition 2 (if applicable)
 
+    @Lob
+    private String about;
+
+    public enum MedicineType {
+        MEDICINE,
+        TABLET,
+        CAPSULE,
+        SYRUP,
+        INJECTION,
+        OINTMENT,
+        DROPS,
+        INHALER
+    }
 
 }

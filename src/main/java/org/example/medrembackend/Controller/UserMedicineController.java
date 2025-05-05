@@ -13,13 +13,17 @@ import java.util.List;
 @RequestMapping("/api/user-medicines")
 public class UserMedicineController {
 
+    private final UserMedicineService userMedicineService;
+
     @Autowired
-    private UserMedicineService userMedicineService;
+    UserMedicineController(UserMedicineService userMedicineService) {
+        this.userMedicineService = userMedicineService;
+    }
 
     // Endpoint to add a new UserMedicine
-    @PostMapping("/")
-    public ResponseEntity<UserMedicineResponse> addUserMedicine(@RequestBody UserMedicineRequest request) {
-        UserMedicineResponse response = userMedicineService.addUserMedicine(request);
+    @PostMapping("/add/{userId}/{medicineId}")
+    public ResponseEntity<UserMedicineResponse> addUserMedicine(@RequestBody UserMedicineRequest request, @PathVariable Long userId, @PathVariable Long medicineId) {
+        UserMedicineResponse response = userMedicineService.addUserMedicine(request, userId, medicineId);
         return ResponseEntity.ok(response);
     }
 

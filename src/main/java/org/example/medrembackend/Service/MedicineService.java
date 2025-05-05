@@ -7,8 +7,11 @@ import java.util.List;
 
 public interface MedicineService {
     MedicineResponse addMedicine(MedicineRequest request);
+
     List<MedicineResponse> getAllMedicines();
-    MedicineResponse getMedicineById(Long id);
-    List<MedicineResponse> searchMedicinesByName(String name);
+
+    MedicineResponse getMedicineByMedicineId(Long id);
+
+    List<MedicineResponse> searchMedicinesByMedicineName(String name);
 
 }

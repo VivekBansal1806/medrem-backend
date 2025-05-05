@@ -1,9 +1,5 @@
 package org.example.medrembackend.Service;
 
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Optional;
-
 import org.example.medrembackend.DTOs.UserMedicineRequest;
 import org.example.medrembackend.DTOs.UserMedicineResponse;
 import org.example.medrembackend.Entity.Medicine;
@@ -16,6 +12,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
+
 
 @Service
 public class UserMedicineServiceImpl implements UserMedicineService {
@@ -34,36 +35,53 @@ public class UserMedicineServiceImpl implements UserMedicineService {
     }
 
     // Add a new UserMedicine
-    public UserMedicineResponse addUserMedicine(UserMedicineRequest request) {
-        logger.info("Adding UserMedicine for userId: {} and medicineId: {}", request.getUserId(), request.getMedicineId());
-        Optional<UserEntity> user = userRepo.findById(request.getUserId());
-        Optional<Medicine> medicine = medicineRepo.findById(request.getMedicineId());
+    public UserMedicineResponse addUserMedicine(UserMedicineRequest request, Long userId, Long medicineId) {
+        logger.info("Adding UserMedicine for userId: {} and medicineId: {}", userId, medicineId);
 
-        if (user.isPresent() && medicine.isPresent()) {
-            UserMedicine userMedicine = new UserMedicine();
-            userMedicine.setUser(user.get());
-            userMedicine.setMedicine(medicine.get());
-            userMedicine.setQuantityPacks(request.getQuantityPacks());
-            userMedicine.setPillsPerPack(request.getPillsPerPack());
-            userMedicine.setAddedDate(LocalDate.now());
-
-            UserMedicine savedUserMedicine = userMedicineRepo.save(userMedicine);
-            logger.info("UserMedicine saved with id: {}", savedUserMedicine.getId());
-
-            return UserMedicineResponse.builder()
-                    .id(savedUserMedicine.getId())
-                    .userId(savedUserMedicine.getUser().getUserId())
-                    .medicineId(savedUserMedicine.getMedicine().getMedicineId())
-                    .medicineName(savedUserMedicine.getMedicine().getName())
-                    .quantityPacks(savedUserMedicine.getQuantityPacks())
-                    .pillsPerPack(savedUserMedicine.getPillsPerPack())
-                    .addedDate(savedUserMedicine.getAddedDate())
-                    .build();
-            
-        } else {
-            logger.error("User or Medicine not found for userId: {} and medicineId: {}", request.getUserId(), request.getMedicineId());
-            throw new RuntimeException("User or Medicine not found");
+        Optional<UserEntity> user = userRepo.findById(userId);
+        if (user.isEmpty()) {
+            logger.error("User not found for userId: {}", userId);
+            throw new RuntimeException("User not found");
         }
+
+        Optional<Medicine> medicine = medicineRepo.findById(medicineId);
+
+        UserMedicine userMedicine = new UserMedicine();
+        userMedicine.setUser(user.get());
+        userMedicine.setQuantityPacks(request.getQuantityPacks());
+        userMedicine.setPillsPerPack(request.getPillsPerPack());
+        userMedicine.setAddedDate(LocalDate.now());
+
+        if (medicine.isPresent()) {
+            userMedicine.setMedicine(medicine.get());
+        } else {
+            userMedicine.setMedicineName(request.getMedicineName());
+            userMedicine.setManufacturer(request.getManufacturer());
+            userMedicine.setComposition1(request.getComposition1());
+            userMedicine.setComposition2(request.getComposition2());
+            userMedicine.setPrice(request.getPrice());
+            userMedicine.setType(request.getMedicineType());
+            userMedicine.setAbout(request.getAbout());
+        }
+
+        UserMedicine savedUserMedicine = userMedicineRepo.save(userMedicine);
+        logger.info("UserMedicine saved with id: {}", savedUserMedicine.getUserMedicineId());
+
+        return UserMedicineResponse.builder()
+                .userMedicineId(savedUserMedicine.getUserMedicineId())
+                .userId(savedUserMedicine.getUser().getUserId())
+                .medicineId(savedUserMedicine.getMedicine() != null ? savedUserMedicine.getMedicine().getMedicineId() : null)
+                .medicineName(savedUserMedicine.getMedicine() != null ? savedUserMedicine.getMedicine().getMedicineName() : savedUserMedicine.getMedicineName())
+                .manufacturer(savedUserMedicine.getMedicine() != null ? savedUserMedicine.getMedicine().getManufacturer() : savedUserMedicine.getManufacturer())
+                .composition1(savedUserMedicine.getMedicine() != null ? savedUserMedicine.getMedicine().getComposition1() : savedUserMedicine.getComposition1())
+                .composition2(savedUserMedicine.getMedicine() != null ? savedUserMedicine.getMedicine().getComposition2() : savedUserMedicine.getComposition2())
+                .price(savedUserMedicine.getMedicine() != null ? savedUserMedicine.getMedicine().getPrice() : savedUserMedicine.getPrice())
+                .medicineType(savedUserMedicine.getMedicine() != null ? savedUserMedicine.getMedicine().getMedicineType().name() : savedUserMedicine.getType())
+                .about(savedUserMedicine.getMedicine() != null ? savedUserMedicine.getMedicine().getAbout() : savedUserMedicine.getAbout())
+                .quantityPacks(savedUserMedicine.getQuantityPacks())
+                .pillsPerPack(savedUserMedicine.getPillsPerPack())
+                .addedDate(savedUserMedicine.getAddedDate())
+                .build();
     }
 
     // Get all UserMedicines for a user
@@ -72,10 +90,10 @@ public class UserMedicineServiceImpl implements UserMedicineService {
         List<UserMedicine> userMedicines = userMedicineRepo.findByUser_UserId(userId);
 
         List<UserMedicineResponse> responseList = userMedicines.stream().map(userMedicine -> UserMedicineResponse.builder()
-                .id(userMedicine.getId())
+                .userMedicineId(userMedicine.getUserMedicineId())
                 .userId(userMedicine.getUser().getUserId())
                 .medicineId(userMedicine.getMedicine().getMedicineId())
-                .medicineName(userMedicine.getMedicine().getName())
+                .medicineName(userMedicine.getMedicine().getMedicineName())
                 .quantityPacks(userMedicine.getQuantityPacks())
                 .pillsPerPack(userMedicine.getPillsPerPack())
                 .addedDate(userMedicine.getAddedDate())
@@ -92,12 +110,12 @@ public class UserMedicineServiceImpl implements UserMedicineService {
 
         if (userMedicine.isPresent()) {
             UserMedicine um = userMedicine.get();
-            logger.info("UserMedicine found with id: {}", um.getId());
+            logger.info("UserMedicine found with id: {}", um.getUserMedicineId());
             return UserMedicineResponse.builder()
-                    .id(um.getId())
+                    .userMedicineId(um.getUserMedicineId())
                     .userId(um.getUser().getUserId())
                     .medicineId(um.getMedicine().getMedicineId())
-                    .medicineName(um.getMedicine().getName())
+                    .medicineName(um.getMedicine().getMedicineName())
                     .quantityPacks(um.getQuantityPacks())
                     .pillsPerPack(um.getPillsPerPack())
                     .addedDate(um.getAddedDate())

@@ -5,10 +5,11 @@ import lombok.Data;
 @Data
 public class MedicineRequest {
     private String name;
-    private Integer packSize;
-    private Double price;
+    private Integer pillsPerPack;
+    private String price;
     private String manufacturer;
-    private String type;
+    private String medicineType;
     private String composition1;
     private String composition2;
+    private String about;
 }
