@@ -1,8 +1,5 @@
 package org.example.medrembackend.Service;
 
-import java.time.LocalDate;
-import java.util.List;
-
 import org.example.medrembackend.DTOs.LoginRequest;
 import org.example.medrembackend.DTOs.LoginResponse;
 import org.example.medrembackend.DTOs.RegistrationRequest;
@@ -14,6 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
+import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -43,6 +43,7 @@ public class UserServiceImpl implements UserService {
         user.setRole(UserEntity.Role.USER);
         user.setCreatedAt(LocalDate.now());
         user.setUpdatedAt(LocalDate.now());
+
         UserEntity savedUser = userRepo.save(user);
 
         return RegistrationResponse.builder()
@@ -102,6 +103,30 @@ public class UserServiceImpl implements UserService {
         String username = jwtHelper.getUsernameFromToken(token);
         return userRepo.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
+    }
+
+    @Override
+    public UserEntity getUserById(long id) {
+        return userRepo.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
+    }
+
+    @Override
+    public UserEntity updateUser(long id, UserEntity updatedUser) {
+        UserEntity existingUser = userRepo.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
+
+        if (updatedUser.getEmail() != null) {
+            existingUser.setEmail(updatedUser.getEmail());
+        }
+        if (updatedUser.getDob() != null) {
+            existingUser.setDob(updatedUser.getDob());
+        }
+        if (updatedUser.getProfilePictureUrl() != null) {
+            existingUser.setProfilePictureUrl(updatedUser.getProfilePictureUrl());
+        }
+
+        existingUser.setUpdatedAt(LocalDate.now());
+
+        return userRepo.save(existingUser);
     }
 
 }

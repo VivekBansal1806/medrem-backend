@@ -1,7 +1,5 @@
 package org.example.medrembackend.Controller;
 
-import java.util.List;
-
 import org.example.medrembackend.DTOs.LoginRequest;
 import org.example.medrembackend.DTOs.LoginResponse;
 import org.example.medrembackend.DTOs.RegistrationRequest;
@@ -10,23 +8,19 @@ import org.example.medrembackend.Entity.UserEntity;
 import org.example.medrembackend.Service.UserServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
 
-    private final UserServiceImpl userService;
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
+    private final UserServiceImpl userService;
 
-    @Autowired
     public UserController(UserServiceImpl userService) {
         this.userService = userService;
         logger.info("UserController initialized");
@@ -56,4 +50,27 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<UserEntity> getUserById(@PathVariable("id") long id) {
+        logger.info("Get user request received");
+        UserEntity user = userService.getUserById(id);
+        logger.info("User retrieved successfully");
+        return ResponseEntity.ok(user);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<UserEntity> updateUser(@PathVariable("id") long id, @RequestBody UserEntity updatedUser) {
+        logger.info("Update user request received for id: {}", id);
+        UserEntity user = userService.updateUser(id, updatedUser);
+        logger.info("User updated successfully for id: {}", id);
+        return ResponseEntity.ok(user);
+    }
+
+    @PostMapping("/logout/{userId}")
+    public ResponseEntity<String> logoutUser(@PathVariable("userId") long userId) {
+        logger.info("Logout request received for userId: {}", userId);
+        // Implement logout logic here, e.g., invalidate session or token if applicable
+        logger.info("User logged out successfully for userId: {}", userId);
+        return ResponseEntity.ok("User logged out successfully");
+    }
 }

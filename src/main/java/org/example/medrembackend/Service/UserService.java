@@ -10,10 +10,15 @@ import java.util.List;
 
 public interface UserService {
     RegistrationResponse registerUser(RegistrationRequest registration);
+
     LoginResponse loginUser(LoginRequest request);
+
     List<UserEntity> getUsers();
-    public UserEntity getUserFromToken(String token);
+
+    UserEntity getUserFromToken(String token);
 
 
+    UserEntity getUserById(long id);
 
-    }
+    UserEntity updateUser(long id, UserEntity updatedUser);
+}
