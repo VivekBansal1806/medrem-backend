@@ -5,7 +5,6 @@ import org.example.medrembackend.DTOs.MedicineResponse;
 import org.example.medrembackend.Service.MedicineService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,7 +18,6 @@ public class MedicineController {
 
     private final MedicineService medicineService;
 
-    @Autowired
     public MedicineController(MedicineService medicineService) {
         this.medicineService = medicineService;
     }
@@ -32,7 +30,7 @@ public class MedicineController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/all")
+    @GetMapping("/getAll")
     public ResponseEntity<List<MedicineResponse>> getAllMedicines() {
         logger.info("Fetching all medicines");
         List<MedicineResponse> responseList = medicineService.getAllMedicines();
@@ -40,10 +38,10 @@ public class MedicineController {
         return ResponseEntity.ok(responseList);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<MedicineResponse> getMedicineById(@PathVariable Long id) {
-        logger.info("Fetching medicine with id: {}", id);
-        MedicineResponse response = medicineService.getMedicineByMedicineId(id);
+    @GetMapping("/get/{medId}")
+    public ResponseEntity<MedicineResponse> getMedicineById(@PathVariable Long medId) {
+        logger.info("Fetching medicine with medId: {}", medId);
+        MedicineResponse response = medicineService.getMedicineByMedicineId(medId);
         logger.info("Fetched medicine: {}", response.getName());
         return ResponseEntity.ok(response);
     }
@@ -55,5 +53,20 @@ public class MedicineController {
         logger.info("Found {} medicines matching search", responseList.size());
         return ResponseEntity.ok(responseList);
     }
+
+    @DeleteMapping("/delete/{medId}")
+    public ResponseEntity<MedicineResponse> deleteMedicine(@PathVariable Long medId) {
+        logger.info("Deleting medicine with medId: {}", medId);
+        MedicineResponse medRes=medicineService.deleteMedicineByMedicineId(medId);
+        logger.info("Deleted medicine with medId: {}", medId);
+        return ResponseEntity.ok(medRes);
+    }
+
+    @PutMapping("/update/{medId}")
+    public ResponseEntity<MedicineResponse> updateMedicine(@PathVariable Long medId, @RequestBody MedicineRequest request) {
+        logger.info("Updating medicine with medId: {}", medId);
+        MedicineResponse response = medicineService.updateMedicine(medId, request);
+        logger.info("Updated medicine with id: {}", medId);
+        return ResponseEntity.ok(response);}
 
 }

@@ -1,15 +1,14 @@
 package org.example.medrembackend.Controller;
 
-import org.example.medrembackend.DTOs.LoginRequest;
-import org.example.medrembackend.DTOs.LoginResponse;
-import org.example.medrembackend.DTOs.RegistrationRequest;
-import org.example.medrembackend.DTOs.RegistrationResponse;
+import org.example.medrembackend.DTOs.*;
 import org.example.medrembackend.Entity.UserEntity;
+import org.example.medrembackend.Security.CustomUserDetails;
 import org.example.medrembackend.Service.UserServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -34,14 +33,6 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    @GetMapping("/getAll")
-    public ResponseEntity<List<UserEntity>> getAllUsers() {
-        logger.info("Get all users request received");
-        List<UserEntity> users = userService.getUsers();
-        logger.info("Users retrieved successfully");
-        return ResponseEntity.ok(users);
-    }
-
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> loginUser(@RequestBody LoginRequest req) {
         logger.info("Login user request received");
@@ -50,27 +41,64 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<UserEntity> getUserById(@PathVariable("id") long id) {
+    @GetMapping("/getAll")
+    public ResponseEntity<List<UserEntity>> getAllUsers() {
+        logger.info("Get all users request received");
+        List<UserEntity> users = userService.getUsers();
+        logger.info("Users retrieved successfully");
+        return ResponseEntity.ok(users);
+    }
+
+
+    //for api testing
+    @GetMapping("/get/{id}")
+    public ResponseEntity<UserEntity> getUserById(@PathVariable("id") Long id) {
         logger.info("Get user request received");
         UserEntity user = userService.getUserById(id);
         logger.info("User retrieved successfully");
         return ResponseEntity.ok(user);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<UserEntity> updateUser(@PathVariable("id") long id, @RequestBody UserEntity updatedUser) {
+    @GetMapping("/get")
+    public ResponseEntity<UserEntity> getUserById(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        long userId = userDetails.getUserId();
+        logger.info("Get user request received");
+        UserEntity user = userService.getUserById(userId);
+        logger.info("User retrieved successfully");
+        return ResponseEntity.ok(user);
+    }
+
+    //for api testing
+    @PutMapping("/update/{id}")
+    public ResponseEntity<UserEntity> updateUser(@PathVariable("id") Long id, @RequestBody UpdateUserReq updatedUser) {
         logger.info("Update user request received for id: {}", id);
         UserEntity user = userService.updateUser(id, updatedUser);
         logger.info("User updated successfully for id: {}", id);
         return ResponseEntity.ok(user);
     }
 
-    @PostMapping("/logout/{userId}")
-    public ResponseEntity<String> logoutUser(@PathVariable("userId") long userId) {
-        logger.info("Logout request received for userId: {}", userId);
-        // Implement logout logic here, e.g., invalidate session or token if applicable
-        logger.info("User logged out successfully for userId: {}", userId);
-        return ResponseEntity.ok("User logged out successfully");
+    @PutMapping("/update")
+    public ResponseEntity<UserEntity> updateUser(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestBody UpdateUserReq updatedUser) {
+        long id = userDetails.getUserId();
+        logger.info("Update user request received for id: {}", id);
+        UserEntity user = userService.updateUser(id, updatedUser);
+        logger.info("User updated successfully for id: {}", id);
+        return ResponseEntity.ok(user);
     }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<UserEntity> deleteUser(@PathVariable("id") Long id) {
+        logger.info("Delete user request received for id: {}", id);
+        UserEntity user=userService.deleteUserById(id);
+        logger.info("User deleted successfully for id: {}", id);
+        return ResponseEntity.ok(user);
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout() {
+        //remaining
+        logger.info("User requested logout - stateless token removed on client side");
+        return ResponseEntity.ok("Logged out successfully. Please remove token on client side.");
+    }
+
 }
