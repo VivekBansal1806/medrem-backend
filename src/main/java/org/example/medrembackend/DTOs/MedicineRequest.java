@@ -4,6 +4,7 @@ import lombok.Data;
 
 @Data
 public class MedicineRequest {
+
     private String name;
     private Integer pillsPerPack;
     private String price;

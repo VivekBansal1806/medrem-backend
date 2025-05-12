@@ -14,4 +14,10 @@ public interface MedicineService {
 
     List<MedicineResponse> searchMedicinesByMedicineName(String name);
 
+    MedicineResponse updateMedicine(long id, MedicineRequest request);
+
+    MedicineResponse deleteMedicineByMedicineId(Long id);
+
+    MedicineResponse deleteMedicineByMedicineName(String medicineName);
+
 }

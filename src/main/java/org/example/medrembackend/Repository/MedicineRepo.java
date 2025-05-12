@@ -8,4 +8,7 @@ import java.util.List;
 public interface MedicineRepo extends JpaRepository<Medicine, Long> {
     List<Medicine> findByMedicineNameContainingIgnoreCase(String name);
 
+    Medicine findMedicinesByMedicineName(String name);
+
+
 }

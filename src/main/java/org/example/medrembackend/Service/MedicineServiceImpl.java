@@ -44,17 +44,7 @@ public class MedicineServiceImpl implements MedicineService {
         logger.info("Medicine saved with id: {}", saved.getMedicineId());
 
         // Return the response, converting the medicineType Enum to String for the response
-        return MedicineResponse.builder()
-                .medicineId(saved.getMedicineId())
-                .name(saved.getMedicineName())
-                .pillsPerPack(saved.getPillsPerPack())
-                .price(saved.getPrice())
-                .manufacturer(saved.getManufacturer())
-                .medicineType(saved.getMedicineType().name())  // Convert Enum to String for response
-                .composition1(saved.getComposition1())
-                .composition2(saved.getComposition2())
-                .about(saved.getAbout())
-                .build();
+        return mapToResponse(saved);
     }
 
 
@@ -85,17 +75,7 @@ public class MedicineServiceImpl implements MedicineService {
                 .orElseThrow(() -> new RuntimeException("Medicine not found"));
         logger.info("Fetched medicine: {}", medicine.getMedicineName());
 
-        return MedicineResponse.builder()
-                .medicineId(medicine.getMedicineId())
-                .name(medicine.getMedicineName())
-                .pillsPerPack(medicine.getPillsPerPack())
-                .price(medicine.getPrice())
-                .manufacturer(medicine.getManufacturer())
-                .medicineType(medicine.getMedicineType().name())
-                .composition1(medicine.getComposition1())
-                .composition2(medicine.getComposition2())
-                .about(medicine.getAbout())
-                .build();
+        return mapToResponse(medicine);
     }
 
     @Override
@@ -117,6 +97,53 @@ public class MedicineServiceImpl implements MedicineService {
         ).collect(Collectors.toList());
         logger.info("Found {} medicines matching search", responseList.size());
         return responseList;
+    }
+
+    @Override
+    public MedicineResponse updateMedicine(long id, MedicineRequest request) {
+        Medicine med = medicineRepo.findById(id).orElseThrow(() -> new RuntimeException("Medicine not found"));
+
+        med.setMedicineName(request.getName());
+        med.setPillsPerPack(request.getPillsPerPack());
+        med.setPrice(request.getPrice());
+        med.setManufacturer(request.getManufacturer());
+        med.setMedicineType(Medicine.MedicineType.valueOf(request.getMedicineType()));
+        med.setComposition1(request.getComposition1());
+        med.setComposition2(request.getComposition2());
+        med.setAbout(request.getAbout());
+        Medicine savedMedicine = medicineRepo.save(med);
+
+        return mapToResponse(savedMedicine);
+    }
+
+    @Override
+    public MedicineResponse deleteMedicineByMedicineId(Long id) {
+        Medicine medicine = medicineRepo.findById(id).orElseThrow(() -> new RuntimeException("Medicine not found"));
+        medicineRepo.delete(medicine);
+        return mapToResponse(medicine);
+    }
+
+    @Override
+    public MedicineResponse deleteMedicineByMedicineName(String medicineName) {
+
+        Medicine med = medicineRepo.findMedicinesByMedicineName(medicineName);
+        medicineRepo.delete(med);
+        return mapToResponse(med);
+    }
+
+    private MedicineResponse mapToResponse(Medicine medicine) {
+
+        return MedicineResponse.builder()
+                .medicineId(medicine.getMedicineId())
+                .name(medicine.getMedicineName())
+                .pillsPerPack(medicine.getPillsPerPack())
+                .price(medicine.getPrice())
+                .manufacturer(medicine.getManufacturer())
+                .medicineType(medicine.getMedicineType().name())
+                .composition1(medicine.getComposition1())
+                .composition2(medicine.getComposition2())
+                .about(medicine.getAbout())
+                .build();
     }
 
 }

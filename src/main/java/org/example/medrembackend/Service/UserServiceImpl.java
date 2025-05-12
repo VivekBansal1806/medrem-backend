@@ -1,9 +1,6 @@
 package org.example.medrembackend.Service;
 
-import org.example.medrembackend.DTOs.LoginRequest;
-import org.example.medrembackend.DTOs.LoginResponse;
-import org.example.medrembackend.DTOs.RegistrationRequest;
-import org.example.medrembackend.DTOs.RegistrationResponse;
+import org.example.medrembackend.DTOs.*;
 import org.example.medrembackend.Entity.UserEntity;
 import org.example.medrembackend.Repository.UserRepo;
 import org.example.medrembackend.Security.JwtHelper;
@@ -111,7 +108,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserEntity updateUser(long id, UserEntity updatedUser) {
+    public UserEntity updateUser(long id, UpdateUserReq updatedUser) {
         UserEntity existingUser = userRepo.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
 
         if (updatedUser.getEmail() != null) {
@@ -127,6 +124,13 @@ public class UserServiceImpl implements UserService {
         existingUser.setUpdatedAt(LocalDate.now());
 
         return userRepo.save(existingUser);
+    }
+
+    @Override
+    public UserEntity deleteUserById(long id) {
+        UserEntity user = userRepo.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
+        userRepo.delete(user);
+        return user;
     }
 
 }

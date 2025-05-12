@@ -9,13 +9,13 @@ import lombok.Data;
 public class Medicine {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long medicineId; // Medicine ID
 
     @Column(nullable = false)
     private String medicineName; // Name of the medicine
 
-    @Column(name = "pack_size", nullable = false)
+    @Column(name = "pack_size")
     private Integer pillsPerPack; // Pack size (e.g., number of pills in a pack)
 
     private String price; // Price of the medicine
@@ -44,5 +44,4 @@ public class Medicine {
         DROPS,
         INHALER
     }
-
 }
