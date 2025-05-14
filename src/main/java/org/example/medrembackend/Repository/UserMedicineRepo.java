@@ -1,5 +1,7 @@
 package org.example.medrembackend.Repository;
 
+import org.example.medrembackend.Entity.Medicine;
+import org.example.medrembackend.Entity.UserEntity;
 import org.example.medrembackend.Entity.UserMedicine;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -15,4 +17,6 @@ public interface UserMedicineRepo extends JpaRepository<UserMedicine, Long> {
 
     // Find a UserMedicine by user and medicine IDs
     Optional<UserMedicine> findByUser_UserIdAndMedicine_MedicineId(Long userId, Long medicineId);  // Reference to user.userId and medicine.id
+
+    Optional<UserMedicine> findByUserAndMedicine(UserEntity user, Medicine medicine);
 }

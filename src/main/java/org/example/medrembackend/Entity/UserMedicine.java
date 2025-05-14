@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Data
@@ -32,12 +34,34 @@ public class UserMedicine {
     private String composition2;
     private String price;
     private String type;
-
     private Integer pillsPerPack;   // e.g., 15 pills per pack
-
     @Lob
     private String about;
 
     private Integer quantityPacks;  // e.g., 2 packs
     private LocalDate addedDate;
+    private Integer remainingPills;
+    private Integer pillsTaken;
+
+    @OneToMany(mappedBy = "userMedicine", cascade = CascadeType.ALL)
+    private List<Reminder> reminder;
+
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
+
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+
+    @PrePersist
+    public void prePersist() {
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        this.updatedAt = LocalDateTime.now();
+    }
 }
+
+

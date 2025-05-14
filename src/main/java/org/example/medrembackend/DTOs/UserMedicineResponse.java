@@ -1,11 +1,12 @@
 package org.example.medrembackend.DTOs;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDate;
 
 @Data
 @Builder
@@ -14,7 +15,6 @@ import java.time.LocalDate;
 public class UserMedicineResponse {
 
     private Long userMedicineId;
-    private Long userId;
     private Long medicineId;
     private String medicineName;
     private String manufacturer;
@@ -26,4 +26,9 @@ public class UserMedicineResponse {
     private Integer quantityPacks;
     private Integer pillsPerPack;
     private LocalDate addedDate;
+
+    private Integer remainingPills;
+    private Integer pillsTaken;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 }

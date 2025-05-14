@@ -1,10 +1,10 @@
 package org.example.medrembackend.DTOs;
 
+import java.time.LocalDate;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDate;
 
 @Data
 @AllArgsConstructor
@@ -22,4 +22,7 @@ public class UserMedicineRequest {
     private Integer quantityPacks;
     private Integer pillsPerPack;
     private LocalDate addedDate;  // When the medicine is added
+
+    private Integer remainingPills;
+    private Integer pillsTaken;
 }
