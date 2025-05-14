@@ -5,7 +5,6 @@ import org.example.medrembackend.Repository.UserRepo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -32,11 +31,7 @@ public class CustomUserDetailsService implements UserDetailsService {
                 });
         logger.info("User found: {}", user.getUsername());
 
-        // Return a Spring Security User object with DB info
-        return User.builder()
-                .username(user.getUsername())
-                .password(user.getPassword())
-                .roles(user.getRole().toString())  // Assuming your role field is Enum or String
-                .build();
+        // Return a CustomUserDetails object with DB info
+        return new CustomUserDetails(user);
     }
 }
