@@ -24,7 +24,7 @@ public class MedicineController {
 
     @PostMapping("/add")
     public ResponseEntity<MedicineResponse> addMedicine(@RequestBody MedicineRequest request) {
-        logger.info("Adding medicine with name: {}", request.getName());
+        logger.info("Adding medicine with name: {}", request.getMedicineName());
         MedicineResponse response = medicineService.addMedicine(request);
         logger.info("Medicine added with id: {}", response.getMedicineId());
         return ResponseEntity.ok(response);
@@ -42,7 +42,7 @@ public class MedicineController {
     public ResponseEntity<MedicineResponse> getMedicineById(@PathVariable Long medId) {
         logger.info("Fetching medicine with medId: {}", medId);
         MedicineResponse response = medicineService.getMedicineByMedicineId(medId);
-        logger.info("Fetched medicine: {}", response.getName());
+        logger.info("Fetched medicine: {}", response.getMedicineName());
         return ResponseEntity.ok(response);
     }
 

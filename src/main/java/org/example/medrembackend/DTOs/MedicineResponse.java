@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class MedicineResponse {
     private Long medicineId;
-    private String name;
+    private String medicineName;
     private Integer pillsPerPack;
     private String price;
     private String manufacturer;

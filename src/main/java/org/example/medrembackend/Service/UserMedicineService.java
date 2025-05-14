@@ -1,5 +1,6 @@
 package org.example.medrembackend.Service;
 
+import org.example.medrembackend.DTOs.MedicineRequest;
 import org.example.medrembackend.DTOs.UserMedicineRequest;
 import org.example.medrembackend.DTOs.UserMedicineResponse;
 
@@ -7,12 +8,12 @@ import java.util.List;
 
 public interface UserMedicineService {
 
-    @Deprecated
-    UserMedicineResponse addUserMedicine(UserMedicineRequest request, long userId, Long medicineId);
+//    @Deprecated
+//    UserMedicineResponse addUserMedicine(UserMedicineRequest request, long userId, Long medicineId);
 
-    UserMedicineResponse addMedicineToUserMedicine(UserMedicineRequest request, long userId, Long medicineId);
+    UserMedicineResponse addMedicineToUserMedicine(long userId, Long medicineId);
 
-    UserMedicineResponse createNewUserMedicine(UserMedicineRequest request, long userId);
+    UserMedicineResponse createNewUserMedicine(MedicineRequest request, long userId);
 
     List<UserMedicineResponse> getUserMedicines(Long userId);
 
@@ -26,5 +27,5 @@ public interface UserMedicineService {
 
     void takeMedicine(Long userMedicineId, int pillsTaken);
 
-    UserMedicineResponse updateUsermedicine(UserMedicineRequest userMedicineRequest, Long userMedicineId);
+    UserMedicineResponse updateUserMedicine(MedicineRequest userMedicineRequest, Long userMedicineId);
 }

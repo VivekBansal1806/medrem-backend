@@ -19,6 +19,7 @@ public class UserMedicine {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userMedicineId;
 
+    /// /////////////////////////////////////////////////
     @ManyToOne
     @JoinColumn(name = "user_id")
     private UserEntity user;
@@ -27,25 +28,21 @@ public class UserMedicine {
     @JoinColumn(name = "medicine_id")
     private Medicine medicine;
 
-    // if medicine is not found in medicine
-    private String medicineName;
-    private String manufacturer;
-    private String composition1;
-    private String composition2;
-    private String price;
-    private String type;
-    private Integer pillsPerPack;   // e.g., 15 pills per pack
-    @Lob
-    private String about;
+    @ManyToOne
+    @JoinColumn(name = "custom_medicine_id")
+    private CustomMedicine customMedicine;
 
+    /// ////////////////////////////////////////////////////
     private Integer quantityPacks;  // e.g., 2 packs
     private LocalDate addedDate;
     private Integer remainingPills;
     private Integer pillsTaken;
 
+    /// ///////////////////////////////////////////////////
     @OneToMany(mappedBy = "userMedicine", cascade = CascadeType.ALL)
     private List<Reminder> reminder;
 
+    /// //////////////////////////////////////////////////
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 

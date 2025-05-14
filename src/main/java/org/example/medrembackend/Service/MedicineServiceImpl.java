@@ -3,6 +3,7 @@ package org.example.medrembackend.Service;
 import org.example.medrembackend.DTOs.MedicineRequest;
 import org.example.medrembackend.DTOs.MedicineResponse;
 import org.example.medrembackend.Entity.Medicine;
+import org.example.medrembackend.Entity.MedicineType;
 import org.example.medrembackend.Repository.MedicineRepo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,15 +27,15 @@ public class MedicineServiceImpl implements MedicineService {
 
     @Override
     public MedicineResponse addMedicine(MedicineRequest request) {
-        logger.info("Adding medicine with name: {}", request.getName());
+        logger.info("Adding medicine with name: {}", request.getMedicineName());
 
         // Create a new Medicine entity
         Medicine medicine = new Medicine();
-        medicine.setMedicineName(request.getName());
+        medicine.setMedicineName(request.getMedicineName());
         medicine.setPillsPerPack(request.getPillsPerPack());
         medicine.setPrice(request.getPrice());
         medicine.setManufacturer(request.getManufacturer());
-        medicine.setMedicineType(Medicine.MedicineType.valueOf(request.getMedicineType().toUpperCase()));
+        medicine.setMedicineType(MedicineType.valueOf(request.getMedicineType().toUpperCase()));
         medicine.setComposition1(request.getComposition1());
         medicine.setComposition2(request.getComposition2());
         medicine.setAbout(request.getAbout());
@@ -51,19 +52,7 @@ public class MedicineServiceImpl implements MedicineService {
     @Override
     public List<MedicineResponse> getAllMedicines() {
         logger.info("Fetching all medicines");
-        List<MedicineResponse> responseList = medicineRepo.findAll().stream().map(medicine ->
-                MedicineResponse.builder()
-                        .medicineId(medicine.getMedicineId())
-                        .name(medicine.getMedicineName())
-                        .pillsPerPack(medicine.getPillsPerPack())
-                        .price(medicine.getPrice())
-                        .manufacturer(medicine.getManufacturer())
-                        .medicineType(medicine.getMedicineType().name())
-                        .composition1(medicine.getComposition1())
-                        .composition2(medicine.getComposition2())
-                        .about(medicine.getAbout())
-                        .build()
-        ).collect(Collectors.toList());
+        List<MedicineResponse> responseList = medicineRepo.findAll().stream().map(this::mapToResponse).collect(Collectors.toList());
         logger.info("Fetched {} medicines", responseList.size());
         return responseList;
     }
@@ -82,19 +71,7 @@ public class MedicineServiceImpl implements MedicineService {
     public List<MedicineResponse> searchMedicinesByMedicineName(String name) {
         logger.info("Searching medicines with name containing: {}", name);
         List<Medicine> medicines = medicineRepo.findByMedicineNameContainingIgnoreCase(name);
-        List<MedicineResponse> responseList = medicines.stream().map(medicine ->
-                MedicineResponse.builder()
-                        .medicineId(medicine.getMedicineId())
-                        .name(medicine.getMedicineName())
-                        .pillsPerPack(medicine.getPillsPerPack())
-                        .price(medicine.getPrice())
-                        .manufacturer(medicine.getManufacturer())
-                        .medicineType(medicine.getMedicineType().name())
-                        .composition1(medicine.getComposition1())
-                        .composition2(medicine.getComposition2())
-                        .about(medicine.getAbout())
-                        .build()
-        ).collect(Collectors.toList());
+        List<MedicineResponse> responseList = medicines.stream().map(this::mapToResponse).collect(Collectors.toList());
         logger.info("Found {} medicines matching search", responseList.size());
         return responseList;
     }
@@ -103,11 +80,11 @@ public class MedicineServiceImpl implements MedicineService {
     public MedicineResponse updateMedicine(long id, MedicineRequest request) {
         Medicine med = medicineRepo.findById(id).orElseThrow(() -> new RuntimeException("Medicine not found"));
 
-        med.setMedicineName(request.getName());
+        med.setMedicineName(request.getMedicineName());
         med.setPillsPerPack(request.getPillsPerPack());
         med.setPrice(request.getPrice());
         med.setManufacturer(request.getManufacturer());
-        med.setMedicineType(Medicine.MedicineType.valueOf(request.getMedicineType()));
+        med.setMedicineType(MedicineType.valueOf(request.getMedicineType()));
         med.setComposition1(request.getComposition1());
         med.setComposition2(request.getComposition2());
         med.setAbout(request.getAbout());
@@ -135,7 +112,7 @@ public class MedicineServiceImpl implements MedicineService {
 
         return MedicineResponse.builder()
                 .medicineId(medicine.getMedicineId())
-                .name(medicine.getMedicineName())
+                .medicineName(medicine.getMedicineName())
                 .pillsPerPack(medicine.getPillsPerPack())
                 .price(medicine.getPrice())
                 .manufacturer(medicine.getManufacturer())
@@ -145,5 +122,4 @@ public class MedicineServiceImpl implements MedicineService {
                 .about(medicine.getAbout())
                 .build();
     }
-
 }

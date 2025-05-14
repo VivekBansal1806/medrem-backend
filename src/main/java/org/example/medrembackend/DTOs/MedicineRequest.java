@@ -1,11 +1,15 @@
 package org.example.medrembackend.DTOs;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class MedicineRequest {
 
-    private String name;
+    private String medicineName;
     private Integer pillsPerPack;
     private String price;
     private String manufacturer;

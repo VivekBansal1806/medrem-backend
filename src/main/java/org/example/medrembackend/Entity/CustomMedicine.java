@@ -1,19 +1,22 @@
 package org.example.medrembackend.Entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Data
 @Entity
-@Table(name = "medicines")
-public class Medicine {
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class CustomMedicine {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long medicineId; // Medicine ID
+    private Long customMedicineId;
 
     @Column(nullable = false)
-    private String medicineName; // Name of the medicine
+    private String customMedicineName; // Name of the medicine
 
     @Column(name = "pack_size")
     private Integer pillsPerPack; // Pack size (e.g., number of pills in a pack)
@@ -23,7 +26,7 @@ public class Medicine {
     private String manufacturer; // Manufacturer of the medicine
 
     @Enumerated(EnumType.STRING)
-    private MedicineType medicineType; // Type of the medicine (e.g., Tablet, Syrup)
+    private MedicineType customMedicineType; // Type of the medicine (e.g., Tablet, Syrup)
 
     @Column(name = "composition_1")
     private String composition1; // Composition 1 (Active ingredient)
@@ -33,4 +36,7 @@ public class Medicine {
 
     @Lob
     private String about;
+
+
 }
+

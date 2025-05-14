@@ -16,6 +16,8 @@ public class UserMedicineResponse {
 
     private Long userMedicineId;
     private Long medicineId;
+    private Long customMedicineId;
+    /// //////////////////////////////////////////////////
     private String medicineName;
     private String manufacturer;
     private String composition1;
@@ -23,12 +25,13 @@ public class UserMedicineResponse {
     private String price;
     private String medicineType;
     private String about;
-    private Integer quantityPacks;
     private Integer pillsPerPack;
+    /// /////////////////////////////////////////////////
+    private Integer quantityPacks;
     private LocalDate addedDate;
-
     private Integer remainingPills;
     private Integer pillsTaken;
+    /// //////////////////////////////////////////////////////
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }
